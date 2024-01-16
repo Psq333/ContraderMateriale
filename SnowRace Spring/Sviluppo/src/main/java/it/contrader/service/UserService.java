@@ -1,0 +1,34 @@
+package it.contrader.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.stereotype.Service;
+
+import it.contrader.converter.UserConverter;
+import it.contrader.dao.UserRepository;
+import it.contrader.dto.UserDTO;
+import it.contrader.model.User;
+
+import java.util.List;
+
+@Service
+public class UserService extends AbstractService<User, UserDTO> {
+
+	@Autowired
+	private UserConverter converter;
+	@Autowired
+	private UserRepository repository;
+
+	public UserDTO findByUsernameAndPassword(String username, String password) {
+		return converter.toDTO(repository.findByUsernameAndPassword(username, password));
+	}
+
+	public UserDTO findByUsername(String username){
+		return converter.toDTO(repository.findByUsername(username));
+	}
+
+	public List<UserDTO> findByUsertype(User.Usertype usertype){
+		return converter.toDTOList(repository.findByUsertype(usertype));
+	}
+
+}
