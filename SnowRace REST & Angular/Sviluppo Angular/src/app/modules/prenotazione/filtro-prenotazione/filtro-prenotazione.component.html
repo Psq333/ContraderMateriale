@@ -1,0 +1,73 @@
+<div class="container">
+  <form [formGroup]="myForm" (ngSubmit)="submitForm()">
+    <div>
+      <mat-radio-button (click)="setFilter(true)"
+        >Filtra per data</mat-radio-button
+      >
+      <mat-radio-button (click)="setFilter(false)"
+        >Filtra per pista</mat-radio-button
+      >
+    </div>
+
+    <div *ngIf="filter">
+      <mat-form-field appearance="outline" color="accent">
+        <label for="dataInizio">Data Inizio</label>
+        <input
+          type="date"
+          id="dataInizio"
+          matInput
+          name="dataInizio"
+          formControlName="dataInizio"
+          required
+        />
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="!filter">
+      <mat-form-field appearance="outline" color="accent">
+        <label>Pista</label>
+        <mat-select formControlName="idPista">
+          <mat-option
+            *ngFor="let track of listaPista"
+            [value]="track.idPista"
+            >{{ track.nome }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <button
+      matInput
+      type="submit"
+      mat-raised-button
+      color="primary"
+      class="button-action login c-button-large"
+    >
+      Filtra
+    </button>
+  </form>
+
+  <div class="container">
+    <div class="container">
+      <div class="container">
+        <ng-container>
+          <app-generic-table
+            [pageIndex]="pageIndex"
+            [size]="size"
+            [totalElements]="totalElements"
+            [dataSource]="dataSource"
+            [displayedColumns]="displayedColumns"
+            [cellHeadTypes]="cellHeadTypes"
+            [hasSearch]="false"
+            [hasSelect]="false"
+          ></app-generic-table>
+        </ng-container>
+
+        <ng-template #noResult>
+          <div class="body mt-24">
+            <span>{{ "Nessun risultato" | uppercase }}</span>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</div>

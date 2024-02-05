@@ -1,0 +1,90 @@
+<div class="container">
+  <div class="head">
+    <div class="w-100">
+      <img
+        src="../../../../../assets/images/sm-logo.svg"
+        alt="Contrader logo"
+      />
+      <mat-icon class="close-icon" (click)="closeDialog()">close</mat-icon>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <form
+      class="form"
+      (ngSubmit)="submitForm()"
+      [formGroup]="inserimentoNoleggio"
+    >
+      <!-- <mat-form-field appearance="outline" color="accent">
+        <label for="idnoleggio">ID Noleggio:</label>
+        <input
+          matInput
+          type="text"
+          id="idnoleggio"
+          formControlName="idnoleggio"
+          name="idnoleggio"
+          required
+        />
+      </mat-form-field> -->
+      <mat-label *ngIf="usertype === 'AMMINISTRATORE'">
+        <mat-form-field>
+          <mat-label>Username</mat-label>
+          <mat-select formControlName="username">
+            <mat-option
+              *ngFor="let utente of listaUtenti"
+              [value]="utente.username"
+            >
+              {{ utente.username || "N/A" }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-label>
+
+      <mat-form-field>
+        <mat-label>Attrezzatura</mat-label>
+        <mat-select formControlName="idattrezzatura">
+          <mat-option
+            *ngFor="let option of listAttrezzature"
+            [value]="option.idAttrezzatura"
+          >
+            {{ option.nome | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent">
+        <label for="startDate">Data inizio noleggio:</label>
+        <input
+          matInput
+          type="date"
+          id="startDate"
+          formControlName="startDate"
+          name="startDate"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent">
+        <label for="endDate">Data fine noleggio:</label>
+        <input
+          matInput
+          type="date"
+          id="endDate"
+          formControlName="endDate"
+          name="endDate"
+          required
+        />
+      </mat-form-field>
+
+      <button
+        matInput
+        type="submit"
+        mat-raised-button
+        color="primary"
+        class="button-action login c-button-large"
+      >
+        {{ isModifica ? "Modifica" : "Inserisci" }}
+      </button>
+    </form>
+  </div>
+</div>
