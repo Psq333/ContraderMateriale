@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="head">
+    <div class="w-100">
+      <img src="../../../assets/images/sm-logo.svg" alt="Contrader logo" />
+      <mat-icon class="close-icon" (click)="closeDialog()">close</mat-icon>
+    </div>
+  </div>
+  <div class="form-container">
+    <form
+      class="form"
+      (ngSubmit)="submitForm()"
+      [formGroup]="inserimentoPrenotazione"
+    >
+    
+      <mat-form-field *ngIf="!isUtente">
+        <mat-label>Piste</mat-label>
+        <mat-select formControlName="pista" id="pista" [attr.disabled]="isUtente ? true : null">
+          <mat-option
+            *ngFor="let option of listaPiste"
+            [value]="option.idPista"
+          >
+            {{ option.nome | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent">
+        <label for="dataInizio">Data Inizio:</label>
+        <input
+          type="date"
+          id="dataInizio"
+          matInput
+          name="dataInizio"
+          formControlName="dataInizio"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field appearance="outline" color="accent">
+        <label for="dataFine">Data fine:</label>
+        <input
+          type="date"
+          id="dataFine"
+          matInput
+          name="dataFine"
+          formControlName="dataFine"
+          required
+        />
+      </mat-form-field>
+      <mat-form-field *ngIf="!isUtente">
+        <mat-label>Utenti</mat-label>
+        <mat-select formControlName="user" id="user">
+          <ng-container *ngFor="let option of listaUtenti">
+            <mat-option *ngIf="option.usertype === 'USER'" [value]="option.id">
+              {{ option.username | titlecase }}
+            </mat-option>
+          </ng-container>
+        </mat-select>
+      </mat-form-field>
+      <button
+        id="submit"
+        matSuffix
+        class="title"
+        type="submit"
+        mat-raised-button
+        color="primary"
+        class="button-action login c-button-large"
+      >
+        Invia
+      </button>
+    </form>
+  </div>
+</div>
