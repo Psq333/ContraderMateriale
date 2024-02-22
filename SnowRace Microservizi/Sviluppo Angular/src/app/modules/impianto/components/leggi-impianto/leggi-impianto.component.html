@@ -1,0 +1,17 @@
+<div class="form-container">
+        <form class="form" [formGroup]="inserimentoImpianto">
+            <mat-form-field  appearance="outline" color="accent">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" matInput name="nome" formControlName="nome" readonly>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" color="accent">
+                <label for="descrzione">Descrizione:</label>
+                <input type="text" id="descrzione" matInput  name="descrizione" formControlName="descrizione" readonly>
+            </mat-form-field>
+            <mat-form-field appearance="outline" color="accent">
+                <label for="luogo">Luogo:</label>
+                <input type="text" id="luogo" matInput  name="luogo" formControlName="luogo" readonly>
+            </mat-form-field>           
+        </form>
+</div>

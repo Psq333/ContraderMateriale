@@ -1,0 +1,44 @@
+<div class="container">
+    <div class="head">
+        <div class="w-100">
+          <img src="../../../assets/images/sm-logo.svg" alt="Contrader logo" />
+          <mat-icon class="close-icon" (click)="closeDialog()">close</mat-icon>
+        </div>
+      </div>
+    <div class="form-container">
+        <form class="form" (ngSubmit)="submitForm()" [formGroup]="inserimentoImpianto">
+            <mat-form-field  appearance="outline" color="accent">
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" matInput name="nome"  formControlName="nome" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" color="accent">
+                <label for="descrzione">Descrizione:</label>
+                <input type="text" id="descrzione" matInput  name="descrizione" formControlName="descrizione" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" color="accent">
+                <label for="luogo">Luogo:</label>
+                <input type="text" id="luogo" matInput  name="luogo" formControlName="luogo" required>
+            </mat-form-field>
+
+            <mat-form-field *ngIf="isUserAdmin">
+                <mat-label>Amministratore</mat-label>
+                <mat-select formControlName="amministratore" id="amministratore">
+                  <mat-option *ngFor="let option of listaAdmin" [value]="option.id">
+                    {{ option.username | titlecase }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            <button 
+            [disabled]="submitButtonDisabled"
+            id = "submit"
+            matSuffix 
+            class="title" 
+            type="submit"
+            mat-raised-button
+            color="primary"
+            class="button-action login c-button-large">Invia</button>
+        </form>
+    </div>
+</div>

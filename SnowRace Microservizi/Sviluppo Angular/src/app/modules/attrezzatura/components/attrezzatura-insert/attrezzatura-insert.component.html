@@ -1,0 +1,73 @@
+<div class="container">
+  <div class="head">
+    <div class="w-100">
+      <img src="../../../assets/images/sm-logo.svg" alt="Contrader logo" />
+      <mat-icon class="close-icon" (click)="closeDialog()">close</mat-icon>
+    </div>
+  </div>
+
+  <div class="form-container">
+    <form
+      class="form"
+      (ngSubmit)="submitForm()"
+      [formGroup]="attrezzaturaInsert"
+    >
+      <mat-form-field appearance="outline" color="accent">
+        <label for="nome">Nome:</label>
+        <input
+          matInput
+          type="text"
+          id="nome"
+          formControlName="nome"
+          name="nome"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent">
+        <label for="descrizione">Descrizione:</label>
+        <input
+          matInput
+          type="text"
+          id="descrizione"
+          formControlName="descrizione"
+          name="descrizione"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" color="accent">
+        <label for="prezzo">Prezzo:</label>
+        <input
+          matInput
+          type="number"
+          id="prezzo"
+          formControlName="prezzo"
+          name="prezzo"
+          required
+        />
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Impianto</mat-label>
+        <mat-select formControlName="idImpianto">
+          <mat-option
+            *ngFor="let option of listaImpianti"
+            [value]="option.id"
+          >
+            {{ option.nome | titlecase }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        type="submit"
+        mat-raised-button
+        color="primary"
+        class="button-action login c-button-large"
+      >
+        {{ isModifica ? "Modifica" : "Inserisci" }}
+      </button>
+    </form>
+  </div>
+</div>
