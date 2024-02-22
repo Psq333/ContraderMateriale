@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>it.contrader</groupId>
+        <artifactId>base_microservizi</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>gateway</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>gateway</name>
+    <description>Servizio Gateway</description>
+    <properties>
+        <org.mapstruct.version>1.4.2.Final</org.mapstruct.version>
+        <jib.base.image>openjdk:17</jib.base.image>
+        <DOCKER_GOAL>dockerBuild</DOCKER_GOAL>
+        <DOCKER_REPOSITORY>local</DOCKER_REPOSITORY>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <from>
+                        <image>${jib.base.image}</image>
+                    </from>
+                    <to>
+                        <image>${DOCKER_REPOSITORY}/formazione/microservizi/gateway</image>
+                        <tags>${project.version},latest</tags>
+                        <auth>
+                            <username>${DOCKER_USERNAME}</username>
+                            <password>${DOCKER_PASSWORD}</password>
+                        </auth>
+                    </to>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>${DOCKER_GOAL}</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
