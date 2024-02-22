@@ -1,0 +1,225 @@
+version: '3.5'
+
+x-common-variables: &env
+  SPRING_PROFILES_ACTIVE: ${ENVIRONMENT}
+  EUREKA_CLIENT_SERVICE-URL_DEFAULTZONE: http://eureka:8761/eureka/
+
+
+services:
+  eureka:
+    #build:
+     # context: ./
+    #  dockerfile: ./eureka/Dockerfile
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/eureka:latest
+    restart: always
+    ports:
+      - "8772:8761"
+
+  gateway:
+   # build:
+   #   context: ./
+   #   dockerfile: ./gateway/Dockerfile
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/gateway:latest
+    restart: always
+    depends_on:
+      - eureka
+    ports:
+      - "8094:8080"
+    environment:
+      <<: *env
+
+  micro-anagrafica:
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/micro-anagrafica:latest
+    restart: always
+    depends_on:
+      - db-anagrafica
+      - eureka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-anagrafica:3306/anagrafica?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      <<: *env
+
+  micro-pista:
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/micro-pista:latest
+    restart: always
+    depends_on:
+      - db-pista
+      - eureka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-pista:3306/pista?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      <<: *env
+
+  db-anagrafica:
+    image: mysql:8.0.28
+    ports:
+      - "3321:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbanagrafica
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    volumes:
+      - db-anagrafica-data:/var/lib/mysql
+
+  micro-prenotazione:
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/micro-prenotazione:latest
+    restart: always
+    depends_on:
+      - db-prenotazione
+      - eureka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-prenotazione:3306/prenotazione?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      <<: *env
+
+  db-prenotazione:
+    image: mysql:8.0.28
+    ports:
+      - "3321:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbprenotazione
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    volumes:
+      - db-prenotazione-data:/var/lib/mysql
+
+  db-pista:
+    image: mysql:8.0.28
+    ports:
+      - "3322:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbpista
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    volumes:
+      - db-pista-data:/var/lib/mysql
+
+  micro-authentication:
+   # build:
+    #  context: ./
+    #  dockerfile: ./authenticationService/Dockerfile
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/micro-authentication:latest
+    restart: always
+    depends_on:
+      - db-authentication
+      - eureka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-authentication:3306/authentication?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      <<: *env
+
+  db-authentication:
+    image: mysql:8.0.28
+    ports:
+      - "3319:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbauth
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    volumes:
+      - db-authentication-data:/var/lib/mysql
+
+  micro-attrezzatura:
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/micro-attrezzatura:latest
+    restart: always
+    depends_on:
+      - db-attrezzatura
+      - eureka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-attrezzatura:3306/attrezzatura?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      <<: *env
+
+  db-attrezzatura:
+      image: mysql:8.0.28
+      ports:
+        - "3323:3306"
+      restart: always
+      environment:
+        MYSQL_DATABASE: dbattrezzatura
+        MYSQL_PASSWORD: root
+        MYSQL_ROOT_PASSWORD: root
+      command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+      volumes:
+        - db-attrezzatura-data:/var/lib/mysql
+
+
+  micro-impianto:
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/micro-impianto:latest
+    restart: always
+    depends_on:
+      - db-impianto
+      - eureka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-impianto:3306/impianto?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      <<: *env
+
+  db-impianto:
+    image: mysql:8.0.28
+    ports:
+      - "3323:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbimpianto
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    volumes:
+      - db-impianto-data:/var/lib/mysql
+
+
+
+  micro-noleggio:
+    image: ${DOCKER_REPOSITORY:-local}/formazione/microservizi/micro-noleggio:latest
+    restart: always
+    depends_on:
+      - db-noleggio
+      - eureka
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db-authentication:3306/noleggio?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+
+
+
+  db-noleggio:
+    image: mysql:8.0.28
+    ports:
+      - "3323:3306"
+    restart: always
+    environment:
+      MYSQL_DATABASE: dbnoleggio
+      MYSQL_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+    volumes:
+      - db-noleggio-data:/var/lib/mysql
+
+
+
+
+# Volumes
+volumes:
+  db-anagrafica-data:
+  db-authentication-data:
+  db-attrezzatura-data:
+  db-prenotazione-data:
+  db-impianto-data:
+  db-pista-data:
+  db-noleggio-data:
+
