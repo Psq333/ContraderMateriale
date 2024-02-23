@@ -194,6 +194,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://db-authentication:3306/noleggio?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC&useLegacyDatetimeCode=false #collegato al network del db1
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
+      <<: *env
 
 
 
